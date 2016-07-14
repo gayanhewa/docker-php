@@ -1,0 +1,33 @@
+
+test-mysql:
+  build: .
+  dockerfile: mysql/Dockerfile
+  container_name: test-mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=test
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=root
+  volumes:
+      - ./mysql/data:/var/lib/mysql
+
+test-webserver:
+  image: phpdockerio/nginx:latest
+  container_name: test-webserver
+  volumes:
+      - ./public:/var/www/test/public
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  ports:
+   - "8001:80"
+  links:
+   - test-php-fpm
+
+test-php-fpm:
+  build: .
+  dockerfile: php-fpm/Dockerfile
+  container_name: test-php-fpm
+  volumes:
+    - ./public:/var/www/test/public
+    - ./php-fpm/php-ini-overrides.ini:/etc/php5/fpm/conf.d/99-overrides.ini
+  links:
+    - test-mysql
