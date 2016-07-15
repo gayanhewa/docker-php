@@ -22,3 +22,7 @@ MySQL has a default account :
 - Password : root
 
 The server is publicly accessible. ( mysql/entrypoint.sh )
+
+Once the containers are up if you want to run commands you can use docker exec
+
+    docker exec -i test-mysql mysql -uroot -proot test < db.sql
